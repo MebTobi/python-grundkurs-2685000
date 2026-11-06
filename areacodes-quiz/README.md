@@ -26,6 +26,19 @@ Windows-Programm verpackt (eigenes Fenster, Startmenü nicht nötig, Lernstand b
 - Windows SmartScreen kann beim ersten Start warnen, weil die .exe nicht signiert ist
   („Weitere Informationen“ → „Trotzdem ausführen“).
 
+## Mac-Programm (macOS)
+
+Gleiche Electron-App als Mac-Version (Universal: Apple Silicon und Intel).
+
+- **Download:** GitHub → *Actions* → „Vorwahlen-Quiz Desktop-Build“ → letzter Lauf →
+  Artefakt *Vorwahlen-Quiz-Mac* (bei Tag `quiz-v*` auch als Release).
+- **Installieren:** `Vorwahlen-Quiz-1.0.0-mac.dmg` öffnen und die App in den Ordner
+  *Programme* ziehen.
+- **Erster Start:** Die App ist nicht von Apple notarisiert. macOS meldet daher „kann nicht
+  geöffnet werden“. Dann: *Systemeinstellungen → Datenschutz & Sicherheit* → unten
+  „Dennoch öffnen“. Alternativ im Terminal: `xattr -cr /Applications/Vorwahlen-Quiz.app`.
+- **Selbst bauen** (auf einem Mac): `cd desktop`, `npm install`, `npm run dist:mac`.
+
 ## Länder
 
 | Land | Vorwahlen | Gebiete | Gruppierung |
