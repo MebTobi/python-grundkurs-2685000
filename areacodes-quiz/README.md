@@ -7,6 +7,13 @@ für Smartphone und Desktop, komplett auf Deutsch, ohne Build-Schritt.
 `python3 -m http.server` im Ordner `areacodes-quiz/` ausführen und `http://localhost:8000` öffnen.
 Für GitHub Pages einfach den Ordner veröffentlichen.
 
+## Einfachste Variante: eine einzige Datei
+
+`Vorwahlen-Quiz.html` enthält die komplette App (alle drei Länder) in einer Datei.
+Herunterladen und doppelklicken – öffnet sich im Browser (Safari, Chrome, Edge, Firefox),
+auf Mac und Windows, ohne Installation und ohne Sicherheitswarnung.
+Neu erzeugen nach Änderungen: `python3 tools/build_single.py`.
+
 ## Windows-Programm
 
 Im Ordner `desktop/` liegt eine Electron-Hülle, die dieselbe App als eigenständiges
