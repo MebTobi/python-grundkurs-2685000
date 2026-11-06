@@ -7,6 +7,23 @@ für Smartphone und Desktop, komplett auf Deutsch, ohne Build-Schritt.
 `python3 -m http.server` im Ordner `areacodes-quiz/` ausführen und `http://localhost:8000` öffnen.
 Für GitHub Pages einfach den Ordner veröffentlichen.
 
+## Windows-Programm
+
+Im Ordner `desktop/` liegt eine Electron-Hülle, die dieselbe App als eigenständiges
+Windows-Programm verpackt (eigenes Fenster, Startmenü nicht nötig, Lernstand bleibt erhalten).
+
+- **Fertige .exe:** GitHub → *Actions* → „Vorwahlen-Quiz Windows-Build“ → letzter Lauf →
+  Artefakt *Vorwahlen-Quiz-Windows* herunterladen. Wird ein Tag `quiz-v1.0.0` gepusht,
+  landen die Dateien zusätzlich als GitHub-Release.
+  - `Vorwahlen-Quiz-1.0.0-portable.exe`: ohne Installation, einfach doppelklicken.
+  - `Vorwahlen-Quiz-1.0.0-x64.zip`: entpacken und `Vorwahlen-Quiz.exe` starten.
+- **Selbst bauen** (Windows, Node.js 20): `cd desktop`, `npm install`, `npm run dist:win`
+  → Ergebnis in `desktop/dist/`. Zum Ausprobieren ohne Build: `npm start`.
+- Tasten: F oder F11 = Vollbild, Strg + Plus/Minus = Zoom, Alt zeigt das Menü.
+- Die Karten-Hintergründe werden online geladen; Vorwahlgebiete und Quiz funktionieren auch offline.
+- Windows SmartScreen kann beim ersten Start warnen, weil die .exe nicht signiert ist
+  („Weitere Informationen“ → „Trotzdem ausführen“).
+
 ## Länder
 
 | Land | Vorwahlen | Gebiete | Gruppierung |
