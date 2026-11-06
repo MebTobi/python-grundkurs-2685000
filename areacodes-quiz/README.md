@@ -28,16 +28,21 @@ Windows-Programm verpackt (eigenes Fenster, Startmenü nicht nötig, Lernstand b
 
 ## Mac-Programm (macOS)
 
-Gleiche Electron-App als Mac-Version (Universal: Apple Silicon und Intel).
+Gleiche Electron-App als Mac-Version, je eine Datei für Apple Silicon (M1–M4, `arm64`)
+und Intel-Macs (`x64`). Welche du brauchst: Apple-Menü → *Über diesen Mac* → „Chip“.
 
-- **Download:** GitHub → *Actions* → „Vorwahlen-Quiz Desktop-Build“ → letzter Lauf →
-  Artefakt *Vorwahlen-Quiz-Mac* (bei Tag `quiz-v*` auch als Release).
-- **Installieren:** `Vorwahlen-Quiz-1.0.0-mac.dmg` öffnen und die App in den Ordner
-  *Programme* ziehen.
-- **Erster Start:** Die App ist nicht von Apple notarisiert. macOS meldet daher „kann nicht
-  geöffnet werden“. Dann: *Systemeinstellungen → Datenschutz & Sicherheit* → unten
-  „Dennoch öffnen“. Alternativ im Terminal: `xattr -cr /Applications/Vorwahlen-Quiz.app`.
-- **Selbst bauen** (auf einem Mac): `cd desktop`, `npm install`, `npm run dist:mac`.
+1. `Vorwahlen-Quiz-1.0.0-mac-arm64.zip` bzw. `…-mac-x64.zip` doppelklicken (entpackt die App).
+2. `Vorwahlen-Quiz.app` in den Ordner *Programme* ziehen.
+3. Einmalig im Terminal ausführen (die App ist nicht bei Apple registriert/notarisiert):
+   ```
+   xattr -cr /Applications/Vorwahlen-Quiz.app
+   codesign --force --deep --sign - /Applications/Vorwahlen-Quiz.app
+   ```
+4. App normal starten (Launchpad oder *Programme*).
+
+**Selbst bauen** auf einem Mac: `cd desktop`, `npm install`, `npm run dist:mac`
+(erzeugt ein signiertes Universal-`.dmg` in `desktop/dist/`). Auf GitHub läuft der Mac-Build
+nur manuell (*Actions* → „Run workflow“) oder bei Tags `quiz-v*`.
 
 ## Länder
 

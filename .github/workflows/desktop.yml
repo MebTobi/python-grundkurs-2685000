@@ -44,6 +44,8 @@ jobs:
             areacodes-quiz/desktop/dist/*.zip
 
   mac:
+    # Nur manuell oder bei Release-Tags: macOS-Runner standen bei PR-Läufen nicht zur Verfügung
+    if: github.event_name != 'pull_request'
     runs-on: macos-latest
     defaults:
       run:

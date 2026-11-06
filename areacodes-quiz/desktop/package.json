@@ -48,7 +48,7 @@
       "category": "public.app-category.education",
       "identity": "-",
       "hardenedRuntime": false,
-      "artifactName": "Vorwahlen-Quiz-${version}-mac.${ext}"
+      "artifactName": "Vorwahlen-Quiz-${version}-mac-${arch}.${ext}"
     },
     "dmg": {
       "title": "Vorwahlen-Quiz"
