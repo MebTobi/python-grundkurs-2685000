@@ -70,6 +70,8 @@ Auswahl, Lernstand und gespeicherte Fehler werden **pro Land** gespeichert.
   (Gebiet markiert, Vorwahl per Nummernblock), Fehler wiederholen.
 - **Feedback:** richtig = grün, Vorwahl bleibt stehen; falsch = rot aufblinken;
   nach 3 Fehlversuchen wird die Lösung gelb markiert.
+- **Städte:** Die größten Städte stehen als Punkte mit Namen auf der Karte (Hauptstadt rot);
+  beim Hineinzoomen kommen weitere dazu. Abschaltbar, im Schwer-Modus ausgeblendet.
 - **Einstellungen:** Staaten/Provinzen (alle/keine), Großregionen (Brasilien),
   führende 0 (Indonesien), Kartenstil, Grenzdicke, Schwer-Modus, Timer, Hell/Dunkel.
 - **Tasten:** P überspringen, F Vollbild, Esc Menü, Ziffern/Enter/⌫ im Umgekehrt-Modus.
@@ -91,6 +93,7 @@ Vorwahl akzeptiert, die das markierte Gebiet abdeckt.
   [Alf-Anas/batas-administrasi-indonesia](https://github.com/Alf-Anas/batas-administrasi-indonesia);
   Zuordnung Kabupaten → Vorwahl: Tabelle in `tools/build_id.py`, abgeglichen mit
   [Namchee/telepon](https://github.com/Namchee/telepon) (MIT).
+- **Städte:** Natural Earth „Populated Places“ (Public Domain), erzeugt mit `tools/build_cities.py`.
 - Bibliotheken in `vendor/`: Leaflet 1.9.4 (BSD-2), topojson-client 3.1.0 (ISC).
 
 **Einschränkungen:** Die US-Grenzen stammen von 2015. In Indonesien folgen Vorwahlen nicht

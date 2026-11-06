@@ -291,3 +291,24 @@ body.sheet-open #jump { display: none; }
   #countryBtnName { display: none; }
   #countryMenu { top: calc(60px + env(safe-area-inset-top)); }
 }
+
+/* Städte */
+.city { pointer-events: none; }
+.city i {
+  position: absolute; left: -3.5px; top: -3.5px; width: 7px; height: 7px; border-radius: 50%;
+  background: #0f172a; box-shadow: 0 0 0 1.5px #fff;
+}
+.city.big i { left: -4.5px; top: -4.5px; width: 9px; height: 9px; }
+.city.cap i { background: #dc2626; }
+.city span {
+  position: absolute; left: 7px; top: -8px; white-space: nowrap;
+  font-size: 11px; font-weight: 600; color: #334155; font-style: italic;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 2px #fff;
+}
+.city.big span { font-size: 12px; font-weight: 700; color: #0f172a; }
+.map-darkish .city i { background: #f8fafc; box-shadow: 0 0 0 1.5px #0f172a; }
+.map-darkish .city.cap i { background: #f87171; }
+.map-darkish .city span { color: #e2e8f0; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 2px #000; }
+.city.side-l span { left: auto; right: 7px; }
+.city.side-t span { left: 0; top: -22px; transform: translateX(-50%); }
+.city.side-b span { left: 0; top: 6px; transform: translateX(-50%); }

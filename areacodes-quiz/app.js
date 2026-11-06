@@ -57,7 +57,7 @@
 
   const DEFAULTS = {
     country: 'us', mode: 'random', count: 'all', mapStyle: 'light', border: 'thin',
-    hard: false, timer: true, theme: 'auto', zero: false, per: {},
+    hard: false, timer: true, theme: 'auto', zero: false, cities: true, per: {},
   };
   const settings = Object.assign({}, DEFAULTS, store.get('settings', {}));
   if (!COUNTRIES[settings.country]) settings.country = 'us';
@@ -130,6 +130,10 @@
   let regionLayer = null, stateLayer = null;
   const labelLayer = L.layerGroup().addTo(map);
   let labels = {};
+  map.createPane('cities').style.zIndex = 590;
+  const cityLayer = L.layerGroup().addTo(map);
+  let cities = [];
+  let homeZoom = 4;
   const COLORS = { ok: '#22c55e', fail: '#facc15', flash: '#ef4444', target: '#3b82f6' };
   const lineColor = () => (document.body.classList.contains('map-darkish') ? '#e2e8f0' : '#334155');
 
@@ -267,6 +271,14 @@
       });
       labels[id] = { marker: m, html: null, shown: false, bounds: layers[id].getBounds() };
     });
+    cityLayer.clearLayers();
+    cities = ((window.AC_CITIES || {})[code] || []).map(([name, lat, lon, pop, cap], i) => ({
+      name, cap, tier: i < 8 ? 0 : i < 25 ? 1 : i < 60 ? 2 : 3, shown: false, side: null,
+      marker: L.marker([lat, SHIFT.size && lon > 0 ? lon - 360 : lon], {
+        pane: 'cities', interactive: false, keyboard: false,
+        icon: L.divIcon({ className: 'city', html: '', iconSize: [0, 0] }),
+      }),
+    }));
     Object.values(SOURCES).forEach((s) => map.attributionControl.removeAttribution(s));
     map.attributionControl.addAttribution(SOURCES[code]);
 
@@ -288,7 +300,7 @@
     const b = Object.values(CFG.views)[0];
     const opts = { paddingTopLeft: topPad(), paddingBottomRight: bottomPad() };
     if (animate) map.flyToBounds(b, Object.assign(opts, { duration: 0.6 }));
-    else map.fitBounds(b, opts);
+    else { map.fitBounds(b, opts); homeZoom = map.getZoom(); updateLabels(); }
   }
   function buildJump() {
     const nav = $('#jump');
@@ -351,7 +363,47 @@
       if (L0.want && !L0.shown) { labelLayer.addLayer(L0.marker); L0.shown = true; }
       if (!L0.want && L0.shown) { labelLayer.removeLayer(L0.marker); L0.shown = false; }
     });
+    placeCities(z, placed);
   }
+
+  // Städte: Punkt + Name; mehr Städte, je weiter hineingezoomt wird.
+  // Vorwahl-Beschriftungen haben Vorrang, Städte weichen ihnen aus.
+  function placeCities(z, placed) {
+    const on = settings.cities && !settings.hard;
+    const step = z - homeZoom;
+    // Hauptstadt und größte Städte zuerst platzieren
+    const order = cities.slice().sort((a, b) => (b.cap - a.cap) || (a.tier - b.tier));
+    order.forEach((c) => {
+      let side = null;
+      const visible = on && (step >= c.tier - 0.01 || (c.cap && step >= -0.01));
+      if (visible) {
+        const p = map.project(c.marker.getLatLng(), z);
+        const w = 10 + c.name.length * 6.3;
+        const tries = {
+          r: [p.x - 4, p.y - 8, p.x + w, p.y + 8],
+          l: [p.x - w, p.y - 8, p.x + 4, p.y + 8],
+          t: [p.x - w / 2, p.y - 22, p.x + w / 2, p.y - 6],
+          b: [p.x - w / 2, p.y + 6, p.x + w / 2, p.y + 22],
+        };
+        for (const k of ['r', 'l', 't', 'b']) {
+          const box = tries[k];
+          if (!placed.some((q) => box[0] < q[2] && box[2] > q[0] && box[1] < q[3] && box[3] > q[1])) {
+            placed.push(box); side = k; break;
+          }
+        }
+        if (!side) side = 'n'; // nur Punkt, Name hätte überdeckt
+        placed.push([p.x - 4, p.y - 4, p.x + 4, p.y + 4]);
+      }
+      if (visible && c.side !== side) {
+        c.side = side;
+        const cls = 'city side-' + side + (c.cap ? ' cap' : '') + (c.tier === 0 ? ' big' : '');
+        c.marker.setIcon(L.divIcon({ className: cls, html: '<i></i>' + (side === 'n' ? '' : '<span>' + esc(c.name) + '</span>'), iconSize: [0, 0] }));
+      }
+      if (visible && !c.shown) { cityLayer.addLayer(c.marker); c.shown = true; }
+      if (!visible && c.shown) { cityLayer.removeLayer(c.marker); c.shown = false; }
+    });
+  }
+
   map.on('zoomend', updateLabels);
 
   /* ---------- Helfer ---------- */
@@ -948,6 +1000,7 @@
     $('#chkHard').checked = settings.hard;
     $('#chkTimer').checked = settings.timer;
     $('#chkZero').checked = settings.zero;
+    $('#chkCities').checked = settings.cities;
     $('#menuModal').hidden = true;
     show($('#settingsModal'));
   }
@@ -956,6 +1009,7 @@
   $('#btnAllRegions').addEventListener('click', () => { P.digits = Object.keys(REGIONS || {}); saveSettings(); syncStates(); });
   $('#btnNoRegions').addEventListener('click', () => { P.digits = []; saveSettings(); syncStates(); });
   $('#chkHard').addEventListener('change', (e) => { settings.hard = e.target.checked; saveSettings(); applyMapLook(); });
+  $('#chkCities').addEventListener('change', (e) => { settings.cities = e.target.checked; saveSettings(); updateLabels(); });
   $('#chkTimer').addEventListener('change', (e) => { settings.timer = e.target.checked; saveSettings(); updateHud(); });
   $('#chkZero').addEventListener('change', (e) => {
     settings.zero = e.target.checked; saveSettings();

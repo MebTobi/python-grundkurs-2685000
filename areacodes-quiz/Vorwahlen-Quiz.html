@@ -966,6 +966,27 @@ body.sheet-open #jump { display: none; }
   #countryMenu { top: calc(60px + env(safe-area-inset-top)); }
 }
 
+/* Städte */
+.city { pointer-events: none; }
+.city i {
+  position: absolute; left: -3.5px; top: -3.5px; width: 7px; height: 7px; border-radius: 50%;
+  background: #0f172a; box-shadow: 0 0 0 1.5px #fff;
+}
+.city.big i { left: -4.5px; top: -4.5px; width: 9px; height: 9px; }
+.city.cap i { background: #dc2626; }
+.city span {
+  position: absolute; left: 7px; top: -8px; white-space: nowrap;
+  font-size: 11px; font-weight: 600; color: #334155; font-style: italic;
+  text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 2px #fff;
+}
+.city.big span { font-size: 12px; font-weight: 700; color: #0f172a; }
+.map-darkish .city i { background: #f8fafc; box-shadow: 0 0 0 1.5px #0f172a; }
+.map-darkish .city.cap i { background: #f87171; }
+.map-darkish .city span { color: #e2e8f0; text-shadow: 0 0 3px #000, 0 0 3px #000, 0 0 2px #000; }
+.city.side-l span { left: auto; right: 7px; }
+.city.side-t span { left: 0; top: -22px; transform: translateX(-50%); }
+.city.side-b span { left: 0; top: 6px; transform: translateX(-50%); }
+
 </style>
 </head>
 <body>
@@ -1110,6 +1131,7 @@ body.sheet-open #jump { display: none; }
     </section>
     <section class="toggles">
       <label class="toggle"><input type="checkbox" id="chkHard"><span><b>Schwer-Modus</b><small>Keine Staats-/Provinzgrenzen, keine Ortsnamen, keine Hinweise</small></span></label>
+      <label class="toggle"><input type="checkbox" id="chkCities"><span><b>Größte Städte anzeigen</b><small>Punkte mit Namen; mehr Städte beim Hineinzoomen</small></span></label>
       <label class="toggle"><input type="checkbox" id="chkTimer"><span><b>Timer anzeigen</b></span></label>
       <label class="toggle" id="zeroToggle"><input type="checkbox" id="chkZero"><span><b>Führende 0 anzeigen</b><small>Indonesien: 021 statt 21</small></span></label>
     </section>
@@ -1177,6 +1199,11 @@ body.sheet-open #jump { display: none; }
 
 </script>
 <script>
+// Generiert von tools/build_cities.py – Quelle: Natural Earth (Public Domain).
+window.AC_CITIES={"us":[["New York",40.752,-73.982,19040000,0],["Los Angeles",33.992,-118.182,12500000,0],["Chicago",41.832,-87.752,8990000,0],["Miami",25.79,-80.226,5585000,0],["Philadelphia",40.002,-75.172,5492000,0],["Dallas",32.822,-96.842,4798000,0],["Atlanta",33.832,-84.402,4506000,0],["Boston",42.332,-71.072,4467000,0],["Houston",29.822,-95.342,4459000,0],["Washington, D.C.",38.901,-77.011,4338000,1],["Detroit",42.332,-83.082,4101000,0],["Phoenix",33.542,-112.072,3551000,0],["San Francisco",37.769,-122.417,3450000,0],["Seattle",47.572,-122.342,3074000,0],["Irvine",33.68,-117.83,3010232,0],["San Diego",32.822,-117.182,2916000,0],["Minneapolis",44.982,-93.254,2616000,0],["Tampa",27.949,-82.461,2314000,0],["Denver",39.741,-104.986,2313000,0],["Baltimore",39.302,-76.622,2255000,0],["St. Louis",38.637,-90.242,2199000,0],["Fort Lauderdale",26.136,-80.142,2042042,0],["Long Beach",33.787,-118.158,2036134,0],["Cleveland",41.472,-81.697,1890000,0],["Portland",45.522,-122.682,1875000,0],["Pittsburgh",40.432,-80.002,1838000,0],["Las Vegas",36.212,-115.222,1823000,0],["San Bernardino",34.122,-117.302,1745000,0],["San Jose",37.302,-121.852,1668000,0],["Cincinnati",39.164,-84.459,1636000,0],["Sacramento",38.577,-121.472,1604000,0],["Oakland",37.769,-122.221,1510271,0],["Virginia Beach",36.855,-75.98,1491000,0],["San Antonio",29.489,-98.509,1473000,0],["Kansas City",39.109,-94.606,1469000,0],["Ft. Worth",32.74,-97.34,1440454,0],["Indianapolis",39.752,-86.172,1436000,0],["Milwaukee",43.055,-87.922,1388000,0],["Orlando",28.512,-81.382,1350000,0],["Providence",41.823,-71.417,1277000,0],["Columbus",39.982,-82.992,1270000,0],["West Palm Beach",26.745,-80.124,1250000,0],["Raleigh",35.819,-78.645,1163515,0],["Austin",30.269,-97.745,1161000,0],["Birmingham",33.53,-86.825,1128047,0],["Mesa",33.424,-111.736,1085394,0],["Memphis",35.122,-90.002,1081000,0],["Norfolk",36.85,-76.28,1047869,0],["Bridgeport",41.182,-73.202,1018000,0],["Buffalo",42.882,-78.882,1016000,0],["Charlotte",35.207,-80.832,995000,0],["Jacksonville",30.332,-81.672,988000,0],["Salt Lake City",40.777,-111.932,966000,0],["Louisville",38.227,-85.751,948000,0],["Tulsa",36.12,-95.93,946962,0],["Hartford",41.772,-72.682,913000,0],["Richmond",37.552,-77.452,912000,0],["Albuquerque",35.105,-106.641,898642,0],["Omaha",41.24,-96.01,877110,0],["Nashville",36.172,-86.782,877000,0],["Albany",42.67,-73.82,870716,0],["New Haven",41.33,-72.9,846766,0],["Tucson",32.207,-110.892,823000,0],["St. Petersburg",27.771,-82.679,800313,0],["Oklahoma City",35.472,-97.521,788000,0],["Honolulu",21.309,-157.86,786000,0],["New Orleans",29.997,-90.042,785000,0],["Dayton",39.752,-84.202,773000,0],["Rochester",43.172,-77.622,755000,0],["El Paso",31.782,-106.512,753000,0],["Stamford",41.053,-73.539,746920,0],["St. Paul",44.944,-93.085,734854,0],["Arlington",32.685,-97.02,724777,0],["Lowell",42.634,-71.317,723629,0],["Tacoma",47.211,-122.515,719868,0],["Akron",41.07,-81.52,703200,0],["Stockton",37.958,-121.29,685306,0],["Syracuse",43.05,-76.15,662577,0],["Knoxville",35.97,-83.92,655400,0],["Pasadena",29.661,-95.148,628492,0],["San Mateo",37.557,-122.313,626406,0],["Fresno",36.748,-119.773,616353,0],["Oceanside",33.22,-117.335,609854,0],["Gary",41.58,-87.33,591180,0],["Sarasota",27.336,-82.531,589959,0],["Aurora",39.696,-104.808,587540,0],["Covington",39.084,-84.509,585489,0],["Joliet",41.53,-88.107,578460,0],["Grand Rapids",42.964,-85.67,535829,0],["Harrisburg",40.274,-76.885,528892,0],["Vancouver",45.63,-122.64,525802,0],["Glendale",33.582,-112.196,500000,0],["Allentown",40.6,-75.5,496442,0],["Berkeley",37.874,-122.271,496356,0],["Colorado Springs",38.863,-104.792,493654,0],["Everett",47.96,-122.2,486903,0],["Toledo",41.67,-83.58,469924,0],["Bakersfield",35.37,-119.02,443129,0],["Laredo",27.506,-99.507,434768,0],["Baton Rouge",30.458,-91.14,422072,0],["Springfield",42.12,-72.58,421780,0],["Charleston",32.792,-79.992,411940,0],["Miami Beach",25.81,-80.132,407750,0],["Wichita",37.72,-97.33,401843,0],["Columbia",38.952,-92.334,398093,0],["Columbia",34.04,-80.9,398093,0],["Metairie",29.984,-90.153,394206,0],["Palm Springs",33.777,-116.533,390115,0],["Elgin",42.039,-88.29,389514,0],["Greensboro",36.07,-79.8,388887,0],["Des Moines",41.58,-93.62,380655,0],["Ogden",41.232,-111.968,377224,0],["Hampton",37.03,-76.35,366766,0],["Trenton",40.217,-74.743,366513,0],["McAllen",26.203,-98.23,364004,0],["St. Charles",38.784,-90.506,360485,0],["Provo",40.249,-111.638,356712,0],["Greenville",34.853,-82.394,350954,0],["Evanston",42.048,-87.7,350000,0],["Aurora",41.765,-88.3,350000,0],["Spokane",47.67,-117.42,347705,0],["Boise",43.609,-116.227,338071,0],["Salem",42.522,-70.883,335509,0],["Sanford",28.79,-81.28,333460,0],["Reno",39.53,-119.82,328585,0],["Madison",43.073,-89.401,327447,0],["Modesto",37.655,-120.99,323386,0],["Youngstown",41.1,-80.65,311990,0],["Durham",36.0,-78.92,309495,0],["Fort Wayne",41.08,-85.13,299871,0],["Riverside",33.942,-117.398,297554,0],["Flint",43.013,-83.688,295212,0],["Worcester",42.27,-71.8,287365,0],["Barlett",35.223,-89.841,286423,0],["Winston-Salem",36.105,-80.26,281683,0],["Newark",40.7,-74.17,280123,0],["Lansing",42.734,-84.547,279952,0],["Corpus Christi",27.743,-97.402,277454,0],["Little Rock",34.736,-92.331,270893,0],["Ann Arbor",42.3,-83.72,265976,0],["Melbourne",28.083,-80.608,265414,0],["Lexington",38.05,-84.5,264578,0],["Augusta",33.461,-81.985,262332,0],["Naples",26.142,-81.795,262306,0],["Lakeville",44.65,-93.243,261308,0],["Anchorage",61.22,-149.9,260283,0],["Canton",40.799,-81.379,258660,0],["Chattanooga",35.07,-85.25,257589,0],["Rockford",42.27,-89.07,255978,0],["Davenport",41.554,-90.588,255738,0],["Mobile",30.68,-88.05,253466,0],["Jackson",32.299,-90.185,250902,0],["Coral Springs",26.271,-80.271,250000,0],["Waukesha",43.012,-88.231,249912,0],["Shreveport",32.5,-93.77,248053,0],["Lincoln",40.82,-96.68,246220,0],["Eugene",44.05,-123.1,245158,0],["Fayetteville",35.063,-78.884,243306,0],["South Bend",41.683,-86.25,239822,0],["Pensacola",30.421,-87.217,234384,0]],"br":[["São Paulo",-23.557,-46.627,18845000,0],["Rio de Janeiro",-22.923,-43.227,11748000,0],["Belo Horizonte",-19.913,-43.917,5575000,0],["Porto Alegre",-30.048,-51.202,3917000,0],["Brasília",-15.781,-47.918,3716996,1],["Recife",-8.074,-34.918,3651000,0],["Fortaleza",-3.748,-38.582,3602319,0],["Salvador",-12.968,-38.482,3484000,0],["Curitiba",-25.418,-49.322,3084000,0],["Campinas",-22.898,-47.102,2791000,0],["Belém",-1.448,-48.482,2167000,0],["Goiânia",-16.718,-49.302,2022000,0],["Manaus",-3.098,-60.002,1753000,0],["Santos",-23.952,-46.335,1709000,0],["Vitória",-20.322,-40.368,1704000,0],["Niterói",-22.9,-43.1,1500513,0],["Vila Velha",3.217,-51.217,1209091,0],["Vila Velha",-20.368,-40.318,1209091,0],["Maceió",-9.618,-35.732,1186000,0],["Natal",-5.778,-35.242,1088000,0],["São Luís",-2.514,-44.268,1038000,0],["Florianópolis",-27.578,-48.522,1023000,0],["Joinville",-26.318,-48.842,988000,0],["Natal",-6.984,-60.27,980588,0],["João Pessoa",-7.099,-34.878,956000,0],["Olinda",-8.0,-34.85,921840,0],["Teresina",-5.093,-42.782,907000,0],["Novo Hamburgo",-29.71,-51.14,876990,0],["Nova Iguaçu",-22.74,-43.47,844583,0],["Duque de Caxias",-22.77,-43.31,842890,0],["Cuiabá",-15.568,-56.087,806000,0],["Campo Grande",-20.448,-54.619,778000,0],["São José dos Campos",-23.2,-45.88,753769,0],["Jaboatao",-8.11,-35.02,702621,0],["Aracaju",-10.9,-37.12,685356,0],["São José dos Pinhais",-25.57,-49.18,665063,0],["Santo André",-23.653,-46.528,662373,0],["Canoas",-29.92,-51.18,600000,0],["Uberlândia",-18.9,-48.28,563536,0],["Sorocaba",-23.49,-47.47,563281,0],["Ribeirão Preto",-21.17,-47.83,551267,0],["Londrina",-23.3,-51.18,520238,0],["Jundiaí",-23.2,-46.88,505548,0],["Macapá",0.033,-51.05,499166,0],["Feira de Santana",-12.25,-38.97,481911,0],["Americana",-22.75,-47.33,479472,0],["Juiz de Fora",-21.77,-43.375,470193,0],["Volta Redonda",-22.52,-44.095,456362,0],["Foz do Iguaçu",-25.523,-54.53,440455,0],["Campina Grande",-7.23,-35.88,417261,0],["Ipatinga",-19.48,-42.52,407894,0],["Taubaté",-23.02,-45.56,403560,0],["Campos",-21.75,-41.32,387417,0],["Caxias do Sul",-29.18,-51.17,381270,0],["São José do Rio Preto",-20.8,-49.39,374699,0],["Piracicaba",-22.71,-47.64,342209,0],["Bauru",-22.33,-49.08,335024,0],["Montes Claros",-16.72,-43.86,332379,0],["Maringá",-23.41,-51.93,328335,0],["Itajaí",-26.9,-48.68,327126,0],["Pelotas",-31.75,-52.33,320674,0],["Itu",-23.26,-47.3,320170,0],["Anápolis",-16.32,-48.96,319587,0],["Vitória da Conquista",-14.85,-40.84,308204,0],["Porto Velho",-8.75,-63.9,306180,0],["Franca",-20.53,-47.39,305041,0],["Blumenau",-26.92,-49.09,293949,0],["Ponta Grossa",-25.09,-50.16,292177,0],["Limeira",-22.55,-47.4,289665,0],["Petrópolis",-22.509,-43.2,286071,0],["Crato",-7.23,-39.42,273883,0],["Crato",-7.464,-63.04,273883,0],["Cabo Frio",-22.89,-42.04,261721,0],["Petrolina",-9.38,-40.51,260985,0],["Uberaba",-19.78,-47.95,260843,0],["Rio Branco",-9.967,-67.8,257642,0],["Cascavel",-24.96,-53.46,257172,0],["Governador Valadares",-18.87,-41.97,250878,0],["Várzea Grande",-15.65,-56.14,249752,0],["Santa Maria",-29.683,-53.8,249219,0],["Caruaru",-8.28,-35.98,242094,0],["Palmas",-10.238,-48.288,235315,0],["Boa Vista",2.816,-60.666,235150,0],["Ilhéus",-14.78,-39.05,230622,0],["Santarém",-2.433,-54.7,230428,0],["Juazeiro do Norte",-7.21,-39.32,225230,0],["Itabuna",-14.79,-39.28,221938,0],["Imperatriz",-5.52,-47.49,218106,0],["Marília",-22.21,-49.95,212218,0],["Presidente Prudente",-22.12,-51.39,209502,0],["São Carlos",-22.02,-47.89,205035,0],["Criciúma",-28.68,-49.39,204217,0],["Guaratinguetá",-22.82,-45.19,203580,0],["Timon",-5.115,-42.845,203157,0],["Mossoró",-5.19,-37.34,202583,0],["Sete Lagoas",-19.45,-44.25,201334,0],["Divinópolis",-20.15,-44.9,193832,0],["Rio Grande",-32.049,-52.12,187838,0],["Arapiraca",-9.75,-36.67,187668,0],["Cachoeiro de Itapemirim",-20.85,-41.13,187019,0],["Rio Claro",-22.41,-47.56,180147,0],["Passo Fundo",-28.25,-52.42,179529,0],["Nova Friburgo",-22.26,-42.54,171991,0],["Araçatuba",-21.21,-50.45,170024,0],["Barra Mansa",-22.56,-44.17,169386,0],["Marabá",-5.35,-49.116,166182,0],["Carpina",-7.84,-35.26,165579,0],["Lajes",-27.81,-50.31,164676,0],["Dourados",-22.23,-54.81,162202,0],["Xapeco",-27.1,-52.64,160157,0]],"id":[["Jakarta",-6.172,106.827,9125000,1],["Surabaya",-7.247,112.749,2845000,0],["Bandung",-6.948,107.568,2394000,0],["Bekasi",-6.217,106.972,2378211,0],["Medan",3.582,98.648,2115000,0],["Palembang",-2.978,104.748,1749000,0],["Semarang",-6.965,110.418,1396000,0],["Makassar",-5.138,119.43,1262000,0],["Cilacap",-7.719,109.015,1174964,0],["Bogor",-6.568,106.748,918000,0],["Bandar Lampung",-5.45,105.3,881801,0],["Padang",-0.958,100.358,855000,0],["Malang",-7.978,112.608,805000,0],["Pekanbaru",0.567,101.423,799000,0],["Denpasar",-8.65,115.22,732344,0],["Yogyakarta",-7.78,110.375,636660,0],["Palu",-0.907,119.833,612445,0],["Pontianak",-0.03,109.32,607311,0],["Bandjarmasin",-3.33,114.58,603576,0],["Samarinda",-0.5,117.15,592228,0],["Binjai",3.62,98.5,564979,0],["Surakarta",-7.565,110.825,555308,0],["Banda Aceh",5.55,95.32,513698,0],["Bukittinggi",-0.303,100.361,506964,0],["Pasuruan",-7.63,112.9,500000,0],["Mataram",-8.58,116.135,499409,0],["Jambi",-1.59,103.61,457090,0],["Manado",1.48,124.85,451893,0],["Balikpapan",-1.25,116.83,445905,0],["Bengkulu",-3.8,102.27,426673,0],["Gorontalo",0.55,123.07,365497,0],["Ambon",-3.717,128.2,355596,0],["Pematangsiantar",2.961,99.061,341200,0],["Jember",-8.173,113.687,298585,0],["Kupang",-10.179,123.583,282396,0],["Sukabumi",-6.91,106.9,276414,0],["Majene",-3.534,118.966,272377,0],["Pakalongan",-6.88,109.67,272000,0],["Tasikmalaya",-7.325,108.215,271143,0],["Tebingtinggi",3.33,99.13,268043,0],["Padangsidempuan",1.389,99.273,266882,0],["Cirebon",-6.733,108.567,254298,0],["Singkawang",0.912,108.965,248012,0],["Tegal",-6.87,109.12,237084,0],["Kediri",-7.79,112.0,235143,0],["Singaraja",-8.115,115.094,234468,0],["Tanjungpinang",0.917,104.471,226666,0],["Sibolga",1.75,98.8,217312,0],["Martapura",-3.414,114.836,198239,0],["Tarakan",3.3,117.633,193069,0],["Ternate",0.793,127.363,187521,0],["Madiun",-7.635,111.515,186099,0],["Pinrang",-3.786,119.652,182731,0],["Probolinggo",-7.75,113.15,181656,0],["Salatiga",-7.31,110.49,176000,0],["Banyuwangi",-8.195,114.37,172424,0],["Jayapura",-2.533,140.7,169341,0],["Kendari",-3.955,122.597,165377,0],["Serang",-6.11,106.15,164767,0],["Palangkaraya",-2.21,113.91,148289,0],["Lhokseumawe",5.191,97.141,140322,0],["Blitar",-8.07,112.15,132416,0],["Pangkalpinang",-2.08,106.15,125933,0],["Sorong",-0.855,131.285,125535,0],["Indramayu",-6.336,108.319,123263,0],["Pati",-6.742,111.035,122785,0],["Langsa",4.674,97.966,117256,0],["Mojokerto",-7.47,112.43,112557,0],["Magelang",-7.47,110.18,111461,0],["Raba",-8.45,118.767,106101,0],["Maumere",-8.619,122.212,104285,0],["Biak",-1.161,136.048,103610,0],["Perabumulih",-3.443,104.231,103470,0],["Bontang",0.133,117.5,101691,0],["Sungaipenuh",-2.063,101.396,95913,0],["Sampit",-2.533,112.95,92710,0],["Parepare",-4.017,119.633,87776,0],["Sumenep",-7.005,113.85,84656,0],["Watampone",-4.533,120.333,81629,0],["Ende",-8.862,121.649,77205,0],["Tuban",-6.9,112.05,76242,0],["Manokwari",-0.871,134.069,74504,0],["Lahat",-3.8,103.533,65906,0],["Tanjung Pandan",-2.75,107.65,62374,0],["Tidore",0.696,127.436,60611,0],["Ruteng",-8.612,120.47,53976,0],["Sawahlunto",-0.666,100.783,50354,0],["Waingapu",-9.658,120.253,48828,0],["Luwuk",-0.94,122.79,47778,0],["Amahai",-3.328,128.94,47653,0]]};
+
+</script>
+<script>
 /* Vorwahlen-Quiz (USA, Brasilien, Indonesien) – reine Client-App (Leaflet + TopoJSON). */
 (function () {
   'use strict';
@@ -1236,7 +1263,7 @@ body.sheet-open #jump { display: none; }
 
   const DEFAULTS = {
     country: 'us', mode: 'random', count: 'all', mapStyle: 'light', border: 'thin',
-    hard: false, timer: true, theme: 'auto', zero: false, per: {},
+    hard: false, timer: true, theme: 'auto', zero: false, cities: true, per: {},
   };
   const settings = Object.assign({}, DEFAULTS, store.get('settings', {}));
   if (!COUNTRIES[settings.country]) settings.country = 'us';
@@ -1309,6 +1336,10 @@ body.sheet-open #jump { display: none; }
   let regionLayer = null, stateLayer = null;
   const labelLayer = L.layerGroup().addTo(map);
   let labels = {};
+  map.createPane('cities').style.zIndex = 590;
+  const cityLayer = L.layerGroup().addTo(map);
+  let cities = [];
+  let homeZoom = 4;
   const COLORS = { ok: '#22c55e', fail: '#facc15', flash: '#ef4444', target: '#3b82f6' };
   const lineColor = () => (document.body.classList.contains('map-darkish') ? '#e2e8f0' : '#334155');
 
@@ -1446,6 +1477,14 @@ body.sheet-open #jump { display: none; }
       });
       labels[id] = { marker: m, html: null, shown: false, bounds: layers[id].getBounds() };
     });
+    cityLayer.clearLayers();
+    cities = ((window.AC_CITIES || {})[code] || []).map(([name, lat, lon, pop, cap], i) => ({
+      name, cap, tier: i < 8 ? 0 : i < 25 ? 1 : i < 60 ? 2 : 3, shown: false, side: null,
+      marker: L.marker([lat, SHIFT.size && lon > 0 ? lon - 360 : lon], {
+        pane: 'cities', interactive: false, keyboard: false,
+        icon: L.divIcon({ className: 'city', html: '', iconSize: [0, 0] }),
+      }),
+    }));
     Object.values(SOURCES).forEach((s) => map.attributionControl.removeAttribution(s));
     map.attributionControl.addAttribution(SOURCES[code]);
 
@@ -1467,7 +1506,7 @@ body.sheet-open #jump { display: none; }
     const b = Object.values(CFG.views)[0];
     const opts = { paddingTopLeft: topPad(), paddingBottomRight: bottomPad() };
     if (animate) map.flyToBounds(b, Object.assign(opts, { duration: 0.6 }));
-    else map.fitBounds(b, opts);
+    else { map.fitBounds(b, opts); homeZoom = map.getZoom(); updateLabels(); }
   }
   function buildJump() {
     const nav = $('#jump');
@@ -1530,7 +1569,47 @@ body.sheet-open #jump { display: none; }
       if (L0.want && !L0.shown) { labelLayer.addLayer(L0.marker); L0.shown = true; }
       if (!L0.want && L0.shown) { labelLayer.removeLayer(L0.marker); L0.shown = false; }
     });
+    placeCities(z, placed);
   }
+
+  // Städte: Punkt + Name; mehr Städte, je weiter hineingezoomt wird.
+  // Vorwahl-Beschriftungen haben Vorrang, Städte weichen ihnen aus.
+  function placeCities(z, placed) {
+    const on = settings.cities && !settings.hard;
+    const step = z - homeZoom;
+    // Hauptstadt und größte Städte zuerst platzieren
+    const order = cities.slice().sort((a, b) => (b.cap - a.cap) || (a.tier - b.tier));
+    order.forEach((c) => {
+      let side = null;
+      const visible = on && (step >= c.tier - 0.01 || (c.cap && step >= -0.01));
+      if (visible) {
+        const p = map.project(c.marker.getLatLng(), z);
+        const w = 10 + c.name.length * 6.3;
+        const tries = {
+          r: [p.x - 4, p.y - 8, p.x + w, p.y + 8],
+          l: [p.x - w, p.y - 8, p.x + 4, p.y + 8],
+          t: [p.x - w / 2, p.y - 22, p.x + w / 2, p.y - 6],
+          b: [p.x - w / 2, p.y + 6, p.x + w / 2, p.y + 22],
+        };
+        for (const k of ['r', 'l', 't', 'b']) {
+          const box = tries[k];
+          if (!placed.some((q) => box[0] < q[2] && box[2] > q[0] && box[1] < q[3] && box[3] > q[1])) {
+            placed.push(box); side = k; break;
+          }
+        }
+        if (!side) side = 'n'; // nur Punkt, Name hätte überdeckt
+        placed.push([p.x - 4, p.y - 4, p.x + 4, p.y + 4]);
+      }
+      if (visible && c.side !== side) {
+        c.side = side;
+        const cls = 'city side-' + side + (c.cap ? ' cap' : '') + (c.tier === 0 ? ' big' : '');
+        c.marker.setIcon(L.divIcon({ className: cls, html: '<i></i>' + (side === 'n' ? '' : '<span>' + esc(c.name) + '</span>'), iconSize: [0, 0] }));
+      }
+      if (visible && !c.shown) { cityLayer.addLayer(c.marker); c.shown = true; }
+      if (!visible && c.shown) { cityLayer.removeLayer(c.marker); c.shown = false; }
+    });
+  }
+
   map.on('zoomend', updateLabels);
 
   /* ---------- Helfer ---------- */
@@ -2127,6 +2206,7 @@ body.sheet-open #jump { display: none; }
     $('#chkHard').checked = settings.hard;
     $('#chkTimer').checked = settings.timer;
     $('#chkZero').checked = settings.zero;
+    $('#chkCities').checked = settings.cities;
     $('#menuModal').hidden = true;
     show($('#settingsModal'));
   }
@@ -2135,6 +2215,7 @@ body.sheet-open #jump { display: none; }
   $('#btnAllRegions').addEventListener('click', () => { P.digits = Object.keys(REGIONS || {}); saveSettings(); syncStates(); });
   $('#btnNoRegions').addEventListener('click', () => { P.digits = []; saveSettings(); syncStates(); });
   $('#chkHard').addEventListener('change', (e) => { settings.hard = e.target.checked; saveSettings(); applyMapLook(); });
+  $('#chkCities').addEventListener('change', (e) => { settings.cities = e.target.checked; saveSettings(); updateLabels(); });
   $('#chkTimer').addEventListener('change', (e) => { settings.timer = e.target.checked; saveSettings(); updateHud(); });
   $('#chkZero').addEventListener('change', (e) => {
     settings.zero = e.target.checked; saveSettings();

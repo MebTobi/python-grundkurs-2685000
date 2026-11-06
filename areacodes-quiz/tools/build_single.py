@@ -26,9 +26,10 @@ html = html.replace('<link rel="stylesheet" href="style.css">',
                     "<style>\n" + read("style.css") + "\n</style>")
 inline = (script(read("vendor", "leaflet.js")) + script(read("vendor", "topojson-client.min.js")) +
           "".join(script(read("data", cc + ".js")) for cc in ("us", "br", "id")) +
+          script(read("data", "cities.js")) +
           script(read("app.js")))
 old = ('<script src="vendor/leaflet.js"></script>\n<script src="vendor/topojson-client.min.js"></script>\n'
-       '<script src="app.js"></script>\n')
+       '<script src="data/cities.js"></script>\n<script src="app.js"></script>\n')
 assert old in html, "Script-Block in index.html nicht gefunden"
 html = html.replace(old, inline)
 out = os.path.join(ROOT, "Vorwahlen-Quiz.html")
