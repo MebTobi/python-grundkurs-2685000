@@ -15,6 +15,8 @@ Windows-Programm verpackt (eigenes Fenster, Startmenü nicht nötig, Lernstand b
 - **Fertige .exe:** GitHub → *Actions* → „Vorwahlen-Quiz Windows-Build“ → letzter Lauf →
   Artefakt *Vorwahlen-Quiz-Windows* herunterladen. Wird ein Tag `quiz-v1.0.0` gepusht,
   landen die Dateien zusätzlich als GitHub-Release.
+  - `Vorwahlen-Quiz-Setup-1.0.0.exe`: Installationsprogramm (ohne Admin-Rechte, Ordner wählbar,
+    Verknüpfungen auf Desktop und im Startmenü, Deinstallation über die Windows-Einstellungen).
   - `Vorwahlen-Quiz-1.0.0-portable.exe`: ohne Installation, einfach doppelklicken.
   - `Vorwahlen-Quiz-1.0.0-x64.zip`: entpacken und `Vorwahlen-Quiz.exe` starten.
 - **Selbst bauen** (Windows, Node.js 20): `cd desktop`, `npm install`, `npm run dist:win`
