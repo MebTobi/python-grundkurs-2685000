@@ -1,0 +1,77 @@
+name: Vorwahlen-Quiz Desktop-Build
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['quiz-v*']
+    paths: ['areacodes-quiz/**', '.github/workflows/desktop.yml']
+  pull_request:
+    paths: ['areacodes-quiz/**', '.github/workflows/desktop.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: areacodes-quiz/desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: areacodes-quiz/desktop/package-lock.json
+      - run: npm ci
+      - run: npm run dist:win
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Vorwahlen-Quiz-Windows
+          path: |
+            areacodes-quiz/desktop/dist/*.exe
+            areacodes-quiz/desktop/dist/*.zip
+          if-no-files-found: error
+      - name: Release (nur bei Tag quiz-v*)
+        if: startsWith(github.ref, 'refs/tags/quiz-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            areacodes-quiz/desktop/dist/*.exe
+            areacodes-quiz/desktop/dist/*.zip
+
+  mac:
+    # Nur manuell oder bei Release-Tags: macOS-Runner standen bei PR-Läufen nicht zur Verfügung
+    if: github.event_name != 'pull_request'
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: areacodes-quiz/desktop
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: areacodes-quiz/desktop/package-lock.json
+      - run: npm ci
+      - run: npm run dist:mac
+        env:
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Vorwahlen-Quiz-Mac
+          path: |
+            areacodes-quiz/desktop/dist/*.dmg
+            areacodes-quiz/desktop/dist/*-mac.zip
+          if-no-files-found: error
+      - name: Release (nur bei Tag quiz-v*)
+        if: startsWith(github.ref, 'refs/tags/quiz-v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            areacodes-quiz/desktop/dist/*.dmg
+            areacodes-quiz/desktop/dist/*-mac.zip
