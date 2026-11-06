@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>US-Vorwahlen Quiz</title>
+<meta name="description" content="Lerne die US-Telefonvorwahlen (Area Codes) auf der Karte.">
+<meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+<link rel="stylesheet" href="vendor/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="map" aria-label="Karte der US-Vorwahlgebiete"></div>
+
+<header id="topbar">
+  <button id="btnMenu" class="iconbtn" aria-label="Menü" title="Menü">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div id="task">
+    <div id="taskMain">US-Vorwahlen</div>
+    <div id="taskSub"></div>
+    <form id="learnSearch" hidden autocomplete="off">
+      <input id="learnInput" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="Vorwahl suchen" aria-label="Vorwahl suchen">
+    </form>
+  </div>
+  <div id="chips">
+    <span class="chip" id="chipProgress" title="Fortschritt"></span>
+    <span class="chip chip-err" id="chipErrors" title="Fehler"></span>
+    <span class="chip" id="chipTimer" title="Zeit"></span>
+  </div>
+  <button id="btnSkip" class="iconbtn" aria-label="Überspringen (P)" title="Überspringen (P)" hidden>
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5l9 7-9 7zM18 5v14"/></svg>
+  </button>
+  <button id="btnFull" class="iconbtn desktop-only" aria-label="Vollbild (F)" title="Vollbild (F)">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  </button>
+</header>
+
+<div id="toast" role="status" aria-live="polite"></div>
+
+<nav id="jump" aria-label="Kartenausschnitt">
+  <button data-jump="us">USA</button>
+  <button data-jump="ak">AK</button>
+  <button data-jump="hi">HI</button>
+  <button data-jump="pr">PR</button>
+  <button data-jump="pac">Pazifik</button>
+</nav>
+
+<div id="numpad" hidden>
+  <div id="npDisplay" aria-live="polite"><span></span><span></span><span></span></div>
+  <div id="npKeys">
+    <button data-k="1">1</button><button data-k="2">2</button><button data-k="3">3</button>
+    <button data-k="4">4</button><button data-k="5">5</button><button data-k="6">6</button>
+    <button data-k="7">7</button><button data-k="8">8</button><button data-k="9">9</button>
+    <button data-k="back" aria-label="Löschen">⌫</button><button data-k="0">0</button><button data-k="ok" class="np-ok">OK</button>
+  </div>
+</div>
+
+<aside id="infoSheet" hidden>
+  <button class="sheet-close iconbtn" aria-label="Schließen">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div id="infoBody"></div>
+</aside>
+
+<!-- Startmenü -->
+<div class="modal" id="menuModal" hidden>
+  <div class="card">
+    <h1>US-Vorwahlen</h1>
+    <p class="muted">Lerne die Telefonvorwahlen (Area Codes) der USA direkt auf der Karte.</p>
+    <div class="modes" role="radiogroup" aria-label="Modus">
+      <label class="mode"><input type="radio" name="mode" value="learn"><span><b>Lernmodus</b><small>Alle Gebiete beschriftet – antippen für Details</small></span></label>
+      <label class="mode"><input type="radio" name="mode" value="random"><span><b>Zufallsquiz</b><small>Zufällige Reihenfolge, schwache Codes kommen öfter</small></span></label>
+      <label class="mode"><input type="radio" name="mode" value="seq"><span><b>Der Reihe nach</b><small>Numerisch oder Bundesstaat für Bundesstaat</small></span></label>
+      <label class="mode"><input type="radio" name="mode" value="reverse"><span><b>Umgekehrt</b><small>Gebiet wird markiert – Vorwahl eintippen</small></span></label>
+      <label class="mode"><input type="radio" name="mode" value="repeat"><span><b>Fehler wiederholen</b><small id="repeatInfo"></small></span></label>
+    </div>
+
+    <div class="opts" id="optCount">
+      <span class="lbl">Anzahl</span>
+      <div class="seg" data-setting="count">
+        <button data-value="10">10</button><button data-value="20">20</button><button data-value="50">50</button><button data-value="all">Alle</button>
+      </div>
+    </div>
+    <div class="opts" id="optSeq">
+      <span class="lbl">Reihenfolge</span>
+      <div class="seg" data-setting="seqOrder">
+        <button data-value="num">Numerisch</button><button data-value="state">Nach Staat</button>
+      </div>
+      <label class="inline" id="seqStartNum">ab Vorwahl
+        <input id="inpSeqStart" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="3" placeholder="201">
+      </label>
+      <label class="inline" id="seqStartState">ab Staat
+        <select id="selSeqState"></select>
+      </label>
+    </div>
+
+    <p class="muted small" id="selInfo"></p>
+    <div id="weak"></div>
+
+    <div class="actions">
+      <button class="btn" id="btnOpenSettings">Einstellungen</button>
+      <button class="btn" id="btnResume" hidden>Weiterspielen</button>
+      <button class="btn primary" id="btnStart">Start</button>
+    </div>
+    <p class="muted tiny">Tasten: P = überspringen · F = Vollbild · Esc = Menü</p>
+  </div>
+</div>
+
+<!-- Einstellungen -->
+<div class="modal" id="settingsModal" hidden>
+  <div class="card">
+    <h2>Einstellungen</h2>
+    <section>
+      <div class="row-between">
+        <h3>Bundesstaaten <small class="muted" id="stateCount"></small></h3>
+        <div class="seg small">
+          <button id="btnAllStates">Alle</button><button id="btnNoStates">Keine</button>
+        </div>
+      </div>
+      <div id="stateGrid"></div>
+    </section>
+    <section>
+      <h3>Kartenstil</h3>
+      <div class="seg" data-setting="mapStyle">
+        <button data-value="light">Hell</button><button data-value="dark">Dunkel</button><button data-value="sat">Satellit</button><button data-value="none">Leer</button>
+      </div>
+    </section>
+    <section>
+      <h3>Grenzen der Vorwahlgebiete</h3>
+      <div class="seg" data-setting="border">
+        <button data-value="thin">Dünn</button><button data-value="thick">Dick</button><button data-value="none">Keine</button>
+      </div>
+    </section>
+    <section class="toggles">
+      <label class="toggle"><input type="checkbox" id="chkHard"><span><b>Schwer-Modus</b><small>Keine Staatsgrenzen, keine Ortsnamen</small></span></label>
+      <label class="toggle"><input type="checkbox" id="chkTimer"><span><b>Timer anzeigen</b></span></label>
+    </section>
+    <section>
+      <h3>Erscheinungsbild</h3>
+      <div class="seg" data-setting="theme">
+        <button data-value="auto">Automatisch</button><button data-value="light">Hell</button><button data-value="dark">Dunkel</button>
+      </div>
+    </section>
+    <section>
+      <button class="btn danger" id="btnResetStats">Lernstand zurücksetzen</button>
+    </section>
+    <div class="actions">
+      <button class="btn primary" id="btnCloseSettings">Fertig</button>
+    </div>
+  </div>
+</div>
+
+<!-- Ergebnis -->
+<div class="modal" id="resultModal" hidden>
+  <div class="card">
+    <h2 id="resTitle">Geschafft!</h2>
+    <div class="resgrid">
+      <div><span id="resTime"></span><small>Zeit</small></div>
+      <div><span id="resRate"></span><small>Trefferquote</small></div>
+      <div><span id="resCount"></span><small>Fragen</small></div>
+      <div><span id="resErr"></span><small>Fehlversuche</small></div>
+    </div>
+    <h3 id="resErrTitle">Fehler</h3>
+    <ul id="resErrors"></ul>
+    <div class="actions">
+      <button class="btn" id="btnResMenu">Menü</button>
+      <button class="btn" id="btnResRepeat">Fehler wiederholen</button>
+      <button class="btn primary" id="btnResAgain">Nochmal</button>
+    </div>
+  </div>
+</div>
+
+<script src="vendor/leaflet.js"></script>
+<script src="vendor/topojson-client.min.js"></script>
+<script src="data/codes.js"></script>
+<script src="data/geo.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
