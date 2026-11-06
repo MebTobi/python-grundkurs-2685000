@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Erzeugt data/codes.js und data/geo.js für das Vorwahl-Quiz.
+"""Erzeugt data/us.js (USA) für das Vorwahl-Quiz.
 
 Geometrie-Quelle: "North America Telephone Area Code Boundaries" (UCLA Geoportal,
 Stand 2015, Public Domain), aufbereitet unter https://github.com/1ec5/nanp-boundaries.
@@ -9,14 +9,11 @@ Vorwahlen für dasselbe Gebiet) werden hier über die Tabelle CODES ihren
 Grundgebieten zugeordnet, sodass auch Overlays nach 2015 enthalten sind.
 
 Aufruf:
-    python3 tools/build_data.py /pfad/zu/area-codes.geojson
+    python3 tools/build_us.py /pfad/zu/area-codes.geojson
 Benötigt: npx mapshaper (npm i -g mapshaper)
 """
-import json
-import os
-import subprocess
 import sys
-import tempfile
+from common import build
 
 # Format: Vorwahl|Staat|Grundgebiete (leer = eigenes Gebiet)|Städte
 CODES = """
@@ -410,18 +407,15 @@ STATES = {
     "AS": "Amerikanisch-Samoa",
 }
 
-US_LIKE = {"UNITED STATES"}
-
 
 def parse_codes():
     codes = {}
     for line in CODES.strip().splitlines():
         code, state, bases, cities = line.split("|")
         assert code not in codes, code
-        bases = bases.split(",") if bases else [code]
         codes[code] = {
             "s": state,
-            "b": bases,
+            "b": bases.split(",") if bases else [code],
             "c": [c.strip() for c in cities.split(",") if c.strip()],
         }
     # Overlays erben die Städte ihrer Grundgebiete
@@ -438,66 +432,11 @@ def parse_codes():
 
 def main(src):
     codes = parse_codes()
-    base_ids = sorted({b for i in codes.values() for b in i["b"]})
-    src_data = json.load(open(src, encoding="utf-8"))
-    polys = {}
-    for f in src_data["features"]:
-        p = f["properties"]
-        npa = p["NPA"]
-        if npa not in base_ids:
-            continue
-        if p["COUNTRY"] not in US_LIKE:
-            continue
-        g = f["geometry"]
-        parts = [g["coordinates"]] if g["type"] == "Polygon" else g["coordinates"]
-        polys.setdefault(npa, []).extend(parts)
-    missing = [b for b in base_ids if b not in polys]
-    if missing:
-        sys.exit(f"Fehlende Grundgebiete: {missing}")
-    feats = [
-        {
-            "type": "Feature",
-            "properties": {"id": b, "st": codes[b]["s"] if b in codes else ""},
-            "geometry": {"type": "MultiPolygon", "coordinates": polys[b]},
-        }
-        for b in base_ids
-    ]
-    here = os.path.dirname(os.path.abspath(__file__))
-    out_dir = os.path.join(here, "..", "data")
-    with tempfile.TemporaryDirectory() as tmp:
-        base = os.path.join(tmp, "base.geojson")
-        json.dump({"type": "FeatureCollection", "features": feats}, open(base, "w"))
-        topo = os.path.join(tmp, "regions.json")
-        pts = os.path.join(tmp, "points.json")
-        subprocess.run(
-            ["npx", "mapshaper", base, "-clean", "overlap-rule=min-area", "-simplify", "weighted",
-             "interval=600", "keep-shapes", "-filter-slivers", "min-area=2km2",
-             "-o", "format=topojson", "quantization=200000", topo],
-            check=True)
-        subprocess.run(
-            ["npx", "mapshaper", base, "-points", "inner",
-             "-o", "format=geojson", "precision=0.001", pts],
-            check=True)
-        topo_data = json.load(open(topo))
-        labels = {
-            f["properties"]["id"]: f["geometry"]["coordinates"]
-            for f in json.load(open(pts))["features"]
-        }
-    with open(os.path.join(out_dir, "geo.js"), "w", encoding="utf-8") as fh:
-        fh.write("// Generiert von tools/build_data.py – nicht von Hand bearbeiten.\n")
-        fh.write("window.AC_TOPO=")
-        json.dump(topo_data, fh, separators=(",", ":"))
-        fh.write(";\nwindow.AC_LABELS=")
-        json.dump(labels, fh, separators=(",", ":"))
-        fh.write(";\n")
-    with open(os.path.join(out_dir, "codes.js"), "w", encoding="utf-8") as fh:
-        fh.write("// Generiert von tools/build_data.py – nicht von Hand bearbeiten.\n")
-        fh.write("window.AC_STATES=")
-        json.dump(STATES, fh, ensure_ascii=False, separators=(",", ":"))
-        fh.write(";\nwindow.AC_CODES=")
-        json.dump(codes, fh, ensure_ascii=False, separators=(",", ":"))
-        fh.write(";\n")
-    print(f"{len(codes)} Vorwahlen, {len(base_ids)} Grundgebiete")
+    bases = {b for i in codes.values() for b in i["b"]}
+    build(cc="us", src=[src], assign_field="NPA", assign={b: b for b in bases},
+          codes=codes, groups=STATES,
+          extra_cmds=["-filter", "COUNTRY == 'UNITED STATES'"],
+          preclean=("-clean", "overlap-rule=min-area"))
 
 
 if __name__ == "__main__":
